@@ -12,15 +12,13 @@ export default function Courses() {
     useEffect(() => {
         getCourses()
         .then((res) => {setCourses(res);})
-        .catch(() => {setErrMsg("Failed to fetch courses")})
+        .catch((e) => {setErrMsg(e)})
     }, [])
 
     return (
-        <div
-            className={`grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-        >
+        <div>
             {errMsg && <p>{errMsg}</p>}
-            {/* View all Courses */}
+            <h3>Courses</h3>
             {courses.map((course) => {
                 return <div key={course.id}>
                     <p> Course: {course.name}</p>
@@ -30,6 +28,7 @@ export default function Courses() {
             })}
 
             {/* Create new course */}
+            <h3>Create new Course</h3>
             <ScrapeCourseForm />
         </div>
     );
