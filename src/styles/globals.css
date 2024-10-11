@@ -25,3 +25,9 @@ body {
     text-wrap: balance;
   }
 }
+
+h1 {
+  text-decoration: underline;
+  margin-bottom: 20px;
+  font-size: 25px;
+}
