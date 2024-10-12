@@ -1,4 +1,6 @@
 import TeacherAccountForm from "@/components/teacheraccountform";
+import { VIEW_COURSES_S } from "@/styles/styles";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -7,7 +9,7 @@ export default function Home() {
     >
     <b>Welcome to Darwin</b>
 
-    <a href="/course">View Courses</a>
+    <Link href="/course" style={VIEW_COURSES_S}>View Courses</Link>
 
       <p>If you are a teacher. Please submit a request to make an account</p>
       <TeacherAccountForm/>
