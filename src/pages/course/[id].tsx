@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router'
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getCourse } from '@/services/course';
-import { MOCK_TEACHER_ID as TEACHER_ID } from '@/constants/constants';
+import { TEACHER_ID } from '@/constants/constants';
 import { Course as Course_T } from '@/types/backend';
+import { NEW_ASSIGNMENT_T, ASSIGNMENT_T } from '@/styles/styles';
 
 
 export default function Course() {
@@ -19,7 +21,7 @@ export default function Course() {
         }
         getCourse(courseId, TEACHER_ID)
             .then((res) => { setCourse(res); })
-            .catch((e) => { console.log("ERROR" + e); setError(e) })
+            .catch((e) => { setError(e.message) })
     }, [courseId, isReady])
 
     if (error) {
@@ -45,6 +47,23 @@ export default function Course() {
             <p>Teacher(s): {course.teachers.map((t)=>t.name).join(", ")}</p>
             <p>Tas: {course.tas.map(ta=>ta.name).join(", ")}</p> 
             <p>Num Students: {course.students.length}</p>
+
+            <h1>Assignments</h1>
+            <Link style={NEW_ASSIGNMENT_T}
+            href={"/assignment/new"}>
+                +
+            </Link>
+            {course.assignments.map((a) => {
+                return (
+                    <div key={a.id}>
+                    <Link href={"/assignment/"+a.id} style={ASSIGNMENT_T}>
+                        <p>{a.name}</p>
+                        <p>Due: {a.due_date.toLocaleString()}</p>
+                    </Link>
+                    </div>
+                )
+            })}
+            <h1>Settings</h1>
         </div>
     )
 }

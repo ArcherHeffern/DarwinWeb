@@ -17,8 +17,8 @@ export const getCourses = async (accountId: string): Promise<BasicCourse[]> => {
     if ( res.status !== 200 ) {
         return Promise.reject(`Status code ${res.status}: Reason: ${res.statusText}`)
     }
-    const JSONBasicCourses = res.data 
-    return JSONBasicCourses as BasicCourse[];
+    const JSONBasicCourses = res.data as BasicCourse[]
+    return JSONBasicCourses
 }
 
 
@@ -34,6 +34,10 @@ export const getCourse = async (courseId: string, accountId: string): Promise<Co
     if ( res.status !== 200 ) {
         return Promise.reject(`Status code ${res.status}: Reason: ${res.statusText}`)
     }
-    const JSONCourse = res.data 
+    const JSONCourse = res.data as Course;
+    JSONCourse.assignments.forEach(assignment => {
+        assignment.due_date = new Date(assignment.due_date) // Parse from ISO 8601
+    });
+    JSONCourse.assignments.sort()
     return JSONCourse as Course;
 }

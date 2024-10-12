@@ -1,7 +1,6 @@
 export type BasicCourse = {
     id: number;
     name: string;
-
 }
 
 export type Course = {
@@ -34,6 +33,6 @@ export type Student = {
 export type BasicAssignment = {
     id: number,
     name: string,
-    due_date: string
+    due_date: Date,
 
 }

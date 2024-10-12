@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ScrapeCourseForm from "@/components/scrapecourseform";
 import { BasicCourse } from "@/types/backend";
 import { getCourses } from "@/services/course";
-import { ACTUAL_TEACHER_ID as TEACHER_ID } from "@/constants/constants";
+import { TEACHER_ID } from "@/constants/constants";
 
 export default function Courses() {
 
@@ -14,7 +14,7 @@ export default function Courses() {
     useEffect(() => {
         getCourses(TEACHER_ID)
             .then((res) => { setCourses(res); })
-            .catch((e) => { setError(e) })
+            .catch((e) => { setError(e.message) })
     }, [])
 
     if (error) {
