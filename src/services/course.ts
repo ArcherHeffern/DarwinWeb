@@ -39,5 +39,5 @@ export const getCourse = async (courseId: string, accountId: string): Promise<Co
         assignment.due_date = new Date(assignment.due_date) // Parse from ISO 8601
     });
     JSONCourse.assignments.sort()
-    return JSONCourse as Course;
+    return JSONCourse;
 }

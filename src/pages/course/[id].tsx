@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { getCourse } from '@/services/course';
 import { TEACHER_ID } from '@/constants/constants';
 import { Course as Course_T } from '@/types/backend';
-import { NEW_ASSIGNMENT_T, ASSIGNMENT_T } from '@/styles/styles';
+import { NEW_ASSIGNMENT_S, ASSIGNMENT_S } from '@/styles/styles';
+import ErrorScreen from '@/components/errorScreen';
+import LoadingScreen from '@/components/loadingScreen';
 
 
 export default function Course() {
@@ -13,7 +15,7 @@ export default function Course() {
     const courseId = query.id;
 
     const [course, setCourse] = useState<Course_T | null>(null);
-    const [error, setError] = useState<null|string>(null);
+    const [errorMsg, setErrorMsg] = useState<null|string>(null);
 
     useEffect(() => {
         if (!isReady || typeof courseId !== 'string') {
@@ -21,24 +23,15 @@ export default function Course() {
         }
         getCourse(courseId, TEACHER_ID)
             .then((res) => { setCourse(res); })
-            .catch((e) => { setError(e.message) })
+            .catch((e) => { setErrorMsg(e.message) })
     }, [courseId, isReady])
 
-    if (error) {
-        return (<div>
-            {error &&
-                <p>
-                    {error}
-                </p>}
-            </div>)
+    if (errorMsg) {
+        return (<ErrorScreen errorMsg={errorMsg}/>)
     }
 
     if (!course) {
-        return (
-            <div>
-                Loading...
-            </div>
-        )
+        return (<LoadingScreen/>)
     }
 
     return (
@@ -49,14 +42,14 @@ export default function Course() {
             <p>Num Students: {course.students.length}</p>
 
             <h1>Assignments</h1>
-            <Link style={NEW_ASSIGNMENT_T}
+            <Link style={NEW_ASSIGNMENT_S}
             href={"/assignment/new"}>
                 +
             </Link>
             {course.assignments.map((a) => {
                 return (
                     <div key={a.id}>
-                    <Link href={"/assignment/"+a.id} style={ASSIGNMENT_T}>
+                    <Link href={"/assignment/"+a.id} style={ASSIGNMENT_S}>
                         <p>{a.name}</p>
                         <p>Due: {a.due_date.toLocaleString()}</p>
                     </Link>
