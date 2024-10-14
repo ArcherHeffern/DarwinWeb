@@ -1,10 +1,10 @@
 import { BUTTON_S } from "@/styles/styles";
 import Link from "next/link";
 
-export default function CreateAccountButton() {
+export default function SignUpButton() {
     return (
-        <Link href={"/account"} style={BUTTON_S}>
-            Create account
+        <Link href={"/signup"} style={BUTTON_S}>
+            Sign up
         </Link>
     )
 }

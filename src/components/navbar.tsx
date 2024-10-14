@@ -1,7 +1,7 @@
 import HomeButton from './homeButton';
 import BackButton from './backButton';
 import LoginButton from './loginButton';
-import CreateAccountButton from './createAccountButton';
+import SignUpButton from './createAccountButton';
 import { useContext } from 'react';
 import LogoutButton from './logoutButton';
 import { AuthContext } from '@/pages/_app';
@@ -20,7 +20,7 @@ export default function Navbar() {
             {!accountId &&
                 <div style={{ "display": "flex", "justifyContent": "center" }}>
                     <LoginButton />
-                    <CreateAccountButton />
+                    <SignUpButton />
                 </div>
             }
             {accountId &&
