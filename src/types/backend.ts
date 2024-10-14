@@ -1,7 +1,9 @@
 
+export type AccountId = string
 export type CourseId = string
 export type TeacherId = string
 export type TaId = string
+export type TokenId = string
 export type StudentId = string
 export type AssignmentId = string
 export type BlobId = string
@@ -45,11 +47,18 @@ export type BasicAssignment = {
     due_date: Date,
 }
 
-enum ProjectType {
+export enum AccountPermission {
+    NONE = 0,
+    MEMBER = 1,
+    TA = 2, 
+    TEACHER = 3, 
+    ADMIN = 4, 
+}
+export enum ProjectType {
     MAVEN = 0,
 }
 
-enum SourceType {
+export enum SourceType {
     MOODLE = 0,
     DISK = 1,
 }
@@ -65,4 +74,12 @@ export type Assignment = {
     skeleton_f: BlobId | null
     testfiles_f: BlobId
     last_downloaded: Date|null
+}
+
+export type LoginResponse = {
+    access_token: string
+    account_id: AccountId
+    expiration: Date
+    permission: AccountPermission
+    token_type: string // For Auth0
 }

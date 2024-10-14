@@ -1,14 +1,10 @@
-import Link from 'next/link';
-import BackButton from './backbutton';
-import { BUTTON_S } from '@/styles/styles';
+import Navbar from "./navbar"
+
 
 export default function Layout({ children }) {
   return (
     <div>
-      <BackButton/>
-      <Link style={BUTTON_S} href={{
-        pathname: '/'
-      }}>Home</Link>
+      <Navbar/>
       <main>{children}</main>
     </div>
   );
