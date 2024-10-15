@@ -9,7 +9,7 @@ import { AuthContext } from '../_app'
 export default function LoginPage() {
     const router = useRouter()
 
-    const {setAccountId, setPermission, setToken} = useContext(AuthContext);
+    const { setAccountId, setPermission, setToken, setUsername } = useContext(AuthContext);
     const [errorMsg, setErrorMsg] = useState<null | string>(null);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -31,10 +31,11 @@ export default function LoginPage() {
             setAccountId(loginResponse.account_id)
             setToken(loginResponse.access_token)
             setPermission(loginResponse.permission)
-            router.push("/course")
+            setUsername(loginResponse.name)
+            router.push("/")
         }).catch((e: Error | AxiosError) => {
             if (axios.isAxiosError(e)) {
-                setErrorMsg(e.response?.data || "Axios request failed but we don't know why...")
+                setErrorMsg(JSON.stringify(e.response?.data) || "Axios request failed but we don't know why...")
             } else {
                 setErrorMsg(e.message)
             }

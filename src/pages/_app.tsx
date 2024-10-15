@@ -2,24 +2,35 @@ import "@/styles/globals.css";
 import Layout from "@/components/layout";
 import type { AppProps } from "next/app";
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { AccountId as AccountId_T, AccountPermission as AccountPermission_T, TokenId as TokenId_T } from "@/types/backend";
-import { LOCAL_STORAGE_ACCOUNT_ID, LOCAL_STORAGE_PERMISSION_LEVEL, LOCAL_STORAGE_TOKEN } from "@/constants/constants";
+import { AccountId, AccountId as AccountId_T, AccountPermission as AccountPermission_T, TokenId, TokenId as TokenId_T } from "@/types/backend";
+import { LOCAL_STORAGE_ACCOUNT_ID, LOCAL_STORAGE_PERMISSION_LEVEL, LOCAL_STORAGE_TOKEN, LOCAL_STORATE_USERNAME } from "@/constants/constants";
 
 interface AuthContextType {
-  accountId: string | null;
-  setAccountId: Dispatch<SetStateAction<string | null>>;
-  token: string | null;
-  setToken: Dispatch<SetStateAction<string | null>>;
-  permission: AccountPermission_T | null;
-  setPermission: Dispatch<SetStateAction<AccountPermission_T | null>>;
+  logout: ()=>void;
+  accountId: AccountId | null;
+  setAccountId: Dispatch<SetStateAction<AccountId | null>>;
+  username: string | null,
+  setUsername: Dispatch<SetStateAction<string | null>>
+  token: TokenId | null;
+  setToken: Dispatch<SetStateAction<TokenId | null>>;
+  permission: AccountPermission_T;
+  setPermission: Dispatch<SetStateAction<AccountPermission_T>>;
 }
 
 export const AuthContext = createContext<AuthContextType>(null); // Ignore: This is declared at the top level
 
 export default function App({ Component, pageProps }: AppProps) {
   const [accountId, setAccountId] = useState<AccountId_T | null>(null);
+  const [permission, setPermission] = useState<AccountPermission_T>(AccountPermission_T.NONE);
   const [token, setToken] = useState<TokenId_T | null>(null);
-  const [permission, setPermission] = useState<AccountPermission_T | null>(null);
+  const [username, setUsername] = useState<string|null>(null);
+
+  function logout() {
+    setAccountId(null);
+    setPermission(AccountPermission_T.NONE)
+    setToken(null);
+    setUsername(null);
+  }
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -30,14 +41,19 @@ export default function App({ Component, pageProps }: AppProps) {
       setAccountId(accountId);
     }
 
+    const permissionLevelString = localStorage.getItem(LOCAL_STORAGE_PERMISSION_LEVEL);
+    if (permissionLevelString) {
+      setPermission(Number.parseInt(permissionLevelString));
+    }
+
     const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
     if (token) {
       setToken(token);
     }
 
-    const permissionLevelString = localStorage.getItem(LOCAL_STORAGE_PERMISSION_LEVEL);
-    if (permissionLevelString) {
-      setPermission(Number.parseInt(permissionLevelString));
+    const username = localStorage.getItem(LOCAL_STORATE_USERNAME);
+    if (username) {
+      setUsername(username);
     }
     
   }, [])
@@ -51,6 +67,14 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [accountId]);
 
   useEffect(() => {
+    if (permission) {
+      localStorage.setItem(LOCAL_STORAGE_PERMISSION_LEVEL, permission.toString());
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_PERMISSION_LEVEL);
+    }
+  }, [permission]);
+
+  useEffect(() => {
     if (token) {
       localStorage.setItem(LOCAL_STORAGE_TOKEN, token);
     } else {
@@ -59,15 +83,15 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [token]);
 
   useEffect(() => {
-    if (permission) {
-      localStorage.setItem(LOCAL_STORAGE_PERMISSION_LEVEL, permission.toString());
+    if (username) {
+      localStorage.setItem(LOCAL_STORATE_USERNAME, username);
     } else {
-      localStorage.removeItem(LOCAL_STORAGE_PERMISSION_LEVEL);
+      localStorage.removeItem(LOCAL_STORATE_USERNAME);
     }
-  }, [permission]);
+  }, [username]);
 
   return (
-    <AuthContext.Provider value={{accountId, setAccountId, token, setToken, permission, setPermission}}>
+    <AuthContext.Provider value={{logout, accountId, setAccountId, permission, setPermission, token, setToken, username, setUsername }}>
       <Layout>
         <Component {...pageProps} />
       </Layout>

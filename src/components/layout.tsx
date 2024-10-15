@@ -1,11 +1,13 @@
-import Navbar from "./navbar"
+import Footer from "./footer";
+import Header from "./header"
 
 
 export default function Layout({ children }) {
   return (
-    <div>
-      <Navbar/>
-      <main>{children}</main>
+    <div style={{"display": "flex", "flexDirection": "column", "minHeight": "100vh"}}>
+      <Header/>
+      <main style={{"flexGrow": 1, "display": "flex", "flexDirection": "column"}}>{children}</main>
+      <Footer/>
     </div>
   );
 }

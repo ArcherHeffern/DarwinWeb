@@ -1,21 +1,53 @@
-import TeacherAccountForm from "@/components/teacheraccountform";
-import { VIEW_COURSES_S } from "@/styles/styles";
-import Link from "next/link";
+import { useContext, useState } from "react";
+import { AuthContext } from "./_app";
+import Courses from "../components/courses";
+import ScrapeCourseForm from "@/components/scrapecourseform";
+import Sidebar from "@/components/sidebar";
+import AllCourses from "@/components/allCourses";
+
+export enum Panel {
+  MY_COURSES = "My Courses",
+  ALL_COURSES = "All Courses",
+  CREATE_COURSE = "Create Course",
+}
 
 export default function Home() {
+
+  const { accountId, permission } = useContext(AuthContext);
+  const [activePanel, setActivePanel] = useState<Panel>(Panel.MY_COURSES);
+
+  if (!accountId) {
+    return (
+      <div>
+        <p>Please Sign up or login</p>
+      </div>
+    )
+  }
+
   return (
-    <div
-      className={`grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-    <b>Welcome to Darwin</b>
+    <div style={{ 'display': 'flex', 'flexDirection': 'row', 'alignItems': 'stretch', 'flexGrow': "1", "height": "100%" }}>
+      <Sidebar permission={permission} activePanel={activePanel} setActivePanel={setActivePanel} />
+      <div style={{"marginLeft": "20px"}}>
+        {activePanel === Panel.MY_COURSES &&
+          <div>
+            <h1>Courses</h1>
+            <Courses accountId={accountId} />
+          </div>
+        }
+        {activePanel === Panel.CREATE_COURSE &&
+          <div>
+            <h1>Create new Course</h1>
+            <ScrapeCourseForm />
+          </div>
+        }
 
-    <Link href="/course" style={VIEW_COURSES_S}>View Courses</Link>
-
-      <p>If you are a teacher. Please submit a request to make an account</p>
-      <TeacherAccountForm/>
-
-      <p>If you already have an account: </p>
-      <button>Login</button>
+        {activePanel === Panel.ALL_COURSES &&
+          <div>
+            <h1>All Courses</h1>
+            <AllCourses />
+          </div>
+        }
+      </div>
     </div>
   );
 }

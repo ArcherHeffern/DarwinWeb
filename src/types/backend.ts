@@ -49,10 +49,14 @@ export type Course = {
     assignments: Array<BasicAssignment>,
 }
 
+export type FastAPIError = {
+    detail: string
+}
 export type LoginResponse = {
     access_token: string
     account_id: AccountId
     expiration: Date
+    name: string
     permission: AccountPermission
     token_type: string // For Auth0
 }
@@ -83,6 +87,13 @@ export type Teacher = {
 // ============
 // Enums
 // ============
+
+export enum AccessLevel {
+    NONE = 0,
+    RD = 1,
+    RD_WR = 3,
+    RD_WR_DEL = 4,
+}
 
 export enum AccountPermission {
     NONE = 0,

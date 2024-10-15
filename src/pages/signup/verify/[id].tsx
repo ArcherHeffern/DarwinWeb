@@ -36,7 +36,7 @@ export default function VerifyEmail() {
             setBroadcastMsg(null);
             setCreatedAccount(response.data)
         }).catch((error: AxiosError) => {
-            setBroadcastMsg(`${error.message}: ${error.response?.data}`)
+            setBroadcastMsg(`${error.message}: ${JSON.stringify(error.response?.data)}`)
         })
     }
 

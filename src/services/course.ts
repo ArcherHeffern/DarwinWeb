@@ -1,43 +1,37 @@
-import axios from 'axios'
-import { COURSE_URL } from '@/constants/constants'
-import { BasicCourse, Course } from '@/types/backend';
+import { AxiosError } from 'axios'
+import { ALL_COURSES_URL, COURSE_URL, USER_COURSES_URL } from '@/constants/constants'
+import { AccountId, BasicCourse, Course } from '@/types/backend';
+import { SecureGetFunction } from './auth';
 
-export const getCourses = async (accountId: string): Promise<BasicCourse[]> => {
-    /**
-     * [
-     * {id, name},
-     * {id, name}
-     * ]
-     */
-    const res = await axios.get(`${COURSE_URL}?account_id=${accountId}`);
-    const contentType = res.headers['content-type'];
-    if ( contentType !== 'application/json' ) {
-        return Promise.reject(`Expected Content-Type==application/json but found ${contentType}`)
+export const getCourses = async (accountid: AccountId, secureGet: SecureGetFunction): Promise<BasicCourse[]> => {
+    try {
+        const response = await secureGet(`${USER_COURSES_URL}`)
+        return response.data as BasicCourse[];
+    } catch (error) {
+        throw error as AxiosError;
     }
-    if ( res.status !== 200 ) {
-        return Promise.reject(`Status code ${res.status}: Reason: ${res.statusText}`)
+}
+
+export const getAllCourses = async (secureGet: SecureGetFunction): Promise<BasicCourse[]> => {
+    try {
+        const response = await secureGet(`${ALL_COURSES_URL}`);
+        return response.data as BasicCourse[];
+    } catch (error) {
+        throw error as AxiosError;
     }
-    const JSONBasicCourses = res.data as BasicCourse[]
-    return JSONBasicCourses
 }
 
 
-export const getCourse = async (courseId: string, accountId: string): Promise<Course> => {
-    if (!courseId || !accountId) {
-        return Promise.reject(`Expected courseId and accountId but found courseid: ${courseId} : accountid: ${accountId}`)
+export const getCourse = async (courseId: string, secureGet: SecureGetFunction): Promise<Course> => {
+    try {
+        const response = await secureGet(`${COURSE_URL}/${courseId}`);
+        const JSONCourse = response.data as Course;
+        JSONCourse.assignments.forEach(assignment => {
+            assignment.due_date = new Date(assignment.due_date) // Parse from ISO 8601
+        });
+        JSONCourse.assignments.sort();
+        return JSONCourse;
+    } catch (error) {
+        throw error as AxiosError;
     }
-    const res = await axios.get(`${COURSE_URL}/${courseId}/?account_id=${accountId}`);
-    const contentType = res.headers['content-type'];
-    if ( contentType !== 'application/json' ) {
-        return Promise.reject(`Expected Content-Type==application/json but found ${contentType}`)
-    }
-    if ( res.status !== 200 ) {
-        return Promise.reject(`Status code ${res.status}: Reason: ${res.statusText}`)
-    }
-    const JSONCourse = res.data as Course;
-    JSONCourse.assignments.forEach(assignment => {
-        assignment.due_date = new Date(assignment.due_date) // Parse from ISO 8601
-    });
-    JSONCourse.assignments.sort()
-    return JSONCourse;
 }

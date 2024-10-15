@@ -10,3 +10,4 @@ export const CENTER_S = `grid grid-rows-[20px_1fr_20px] items-center justify-ite
 export const FORM_S: CSSProperties = {'flexWrap': 'nowrap', 'width': '400px', 'margin': 'auto', 'display': 'flex', 'flexDirection': 'column', 'alignItems': 'left', 'justifyContent': 'left'}
 export const FORM_ITEM_CONTAINER: CSSProperties = {'display': 'flex', 'alignItems': 'center'}
 export const SUBMIT_BUTTON_S: CSSProperties = {'fontSize': '30px', 'width': '100%', ...BUTTON_S, 'cursor': 'crosshair'}
+export const SIDEBAR_BUTTON_S: CSSProperties = {"fontWeight": "bold", 'width': '200px', 'borderRight': '1px solid white', "display": "block", "borderBottom": "1px solid white"}
