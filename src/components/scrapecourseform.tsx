@@ -4,24 +4,20 @@ import { FormEvent, useContext, useState } from "react";
 import { MOODLE_COURSE_URL } from "@/constants/constants";
 import { Course, FastAPIError } from "@/types/backend";
 import { useRouter } from "next/router";
-import { AuthHeaders } from "@/services/auth";
+import { AuthHeaders, useSecureGet, useSecurePost } from "@/services/auth";
 import { AuthContext } from "@/pages/_app";
 import Loading from "./loading";
 
 export default function ScrapeCourseForm() {
 
+    const securePost = useSecurePost();
+
     const router = useRouter();
-    const { token } = useContext(AuthContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [errMsg, setErrMsg] = useState<string>('');
 
     async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-
-        if (!token) {
-            console.log("User attempted to scrape a moodle course when not authenticated")
-            return;
-        }
 
         const formData = new FormData(event.currentTarget);
         const courseId = formData.get('courseId');
@@ -41,7 +37,7 @@ export default function ScrapeCourseForm() {
         }
 
         setLoading(true);
-        axios.post(MOODLE_COURSE_URL, requestBody, AuthHeaders(token)).then((response) => {
+        securePost(MOODLE_COURSE_URL, requestBody).then((response) => {
             const course = response.data as Course;
             router.push(("/course/" + course.id))
         }).catch((err: AxiosError) => {

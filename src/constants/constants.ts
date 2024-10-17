@@ -6,7 +6,7 @@ const LOCAL_API = 'http://127.0.0.1:8000'
 const DEPLOY_API = 'http://172.20.129.207:8000'
 
 let _API = LOCAL_API
-if (!DEBUG) {
+if (DEBUG) {
     _API = DEPLOY_API
 }
 

@@ -8,6 +8,7 @@ import ErrorScreen from '@/components/errorScreen';
 import LoadingScreen from '@/components/loadingScreen';
 import { AuthContext } from '../_app';
 import { useSecureGet } from '@/services/auth';
+import getPermission from '@/services/permission';
 
 
 export default function Course() {
@@ -25,6 +26,9 @@ export default function Course() {
         if (!isReady || typeof courseId !== 'string') {
             return;
         }
+        getPermission(courseId, secureGet).then((permission) => {
+            coursePermission.current = permission;
+        }).catch((e) => {});
         getCourse(courseId, secureGet)
             .then((res) => { setCourse(res); })
             .catch((e) => { setErrorMsg(e.message) })

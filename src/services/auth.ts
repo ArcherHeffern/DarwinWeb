@@ -1,4 +1,3 @@
-import { LOCAL_STORAGE_ACCOUNT_ID, LOCAL_STORAGE_PERMISSION_LEVEL, LOCAL_STORAGE_TOKEN, LOCAL_STORATE_USERNAME } from "@/constants/constants";
 import { AuthContext } from "@/pages/_app";
 import { TokenId } from "@/types/backend";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
@@ -10,23 +9,30 @@ export function AuthHeaders(token: TokenId): object {
 }
 
 export type SecureGetFunction = (url: string, config?: AxiosRequestConfig) => Promise<AxiosResponse<any>>;
-type AxiosMethod = (url: string, config?: AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<any, any>>
 
 function useSecureMethod() {
 
     const router = useRouter();
     const { token, logout } = useContext(AuthContext);
 
-    async function SecureMethod(url: string, config: AxiosRequestConfig = {}, method: AxiosMethod) {
+    async function SecureMethod(url: string, body = {}, config: AxiosRequestConfig = {}, method: string = "get") {
         if (!token) {
             handleNotAuthenticated(router, logout);
             throw new Error("Not authenticated");
         }
+        method = method.toLowerCase()
 
         config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
 
         try {
-            return await method(url, config);
+            if (method == "delete")
+                return await axios.delete(url, config);
+            else if (method == "post")
+                return await axios.post(url, body, config);
+            else {
+                return await axios.get(url, config);
+            }
+        
         } catch (e) {
             if (axios.isAxiosError(e) && e.response?.status === 401) {
                 handleNotAuthenticated(router, logout);
@@ -48,8 +54,8 @@ export function useSecurePost() {
 
     const secureMethod = useSecureMethod();
 
-    async function securePost(url: string, config: AxiosRequestConfig<any> = {}): Promise<AxiosResponse<any, any>> {
-        return secureMethod(url, config, axios.post)
+    async function securePost(url: string, body = {}, config: AxiosRequestConfig<any> = {}): Promise<AxiosResponse<any, any>> {
+        return secureMethod(url, body, config, "post")
     }
     return securePost
 }
@@ -59,7 +65,7 @@ export function useSecureGet() {
     const secureMethod = useSecureMethod();
 
     async function secureGet(url: string, config: AxiosRequestConfig<any> = {}): Promise<AxiosResponse<any, any>> {
-        return secureMethod(url, config, axios.get)
+        return secureMethod(url, {}, config, "get")
     }
     return secureGet
 }

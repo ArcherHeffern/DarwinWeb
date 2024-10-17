@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { LOGIN_URL } from '@/constants/constants'
 import { LoginResponse } from '@/types/backend'
-import { BUTTON_S, CENTER_S, TEXT_INPUT_S } from '@/styles/styles'
+import { BUTTON_S, CENTER_FORM_S, TEXT_INPUT_S } from '@/styles/styles'
 import { AuthContext } from '../_app'
 
 export default function LoginPage() {
@@ -43,7 +43,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className={CENTER_S}>
+        <div style={CENTER_FORM_S}>
             {errorMsg && <p>{errorMsg}</p>}
             <form onSubmit={handleSubmit} style={{"display": "flex", "flexDirection": "column"}}>
                 <input type="email" name="email" placeholder="Email" required style={TEXT_INPUT_S}/>
